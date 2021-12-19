@@ -7,7 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
         // see StaticApplicationContextDemoTest for a JUnit version
-        try (StaticApplicationContext context = new StaticApplicationContext()) {
+        try (var context = new StaticApplicationContext()) {
             var beanFactory = (BeanFactory) context;
 
             final var defaultScopeId = "Foo in default scope";

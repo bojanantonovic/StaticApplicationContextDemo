@@ -1,69 +1,69 @@
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.StaticApplicationContext;
 import staticapplicationcontextdemo.Foo;
 
 class StaticApplicationContextDemoTest {
 
-	private StaticApplicationContext context;
-	private BeanFactory beanFactory;
+	private static StaticApplicationContext context;
 
-	@BeforeEach
-	public void init() {
+	@BeforeAll
+	static void init() {
 		context = new StaticApplicationContext();
-		beanFactory = context;
 	}
 
-	@AfterEach
-	public void closeContext() {
+	@AfterAll
+	static void closeContext() {
 		context.close();
 	}
 
 	@Test
 	void testDefaultScope() {
+		// arrange
 		context.registerBean("foo", Foo.class);
 
-		Assertions.assertTrue(beanFactory.isSingleton("foo"));
+		// act
+		var o1 = context.getBean("foo");
+		var o2 = context.getBean("foo");
 
-		var o1 = beanFactory.getBean("foo");
-        var o2 = beanFactory.getBean("foo");
-
+		// assert
+		Assertions.assertTrue(context.isSingleton("foo"));
 		Assertions.assertNotNull(o1);
 		Assertions.assertNotNull(o2);
-
 		Assertions.assertSame(o1, o2);
 	}
 
 	@Test
 	void testSingletonScope() {
+		// arrange
 		context.registerSingleton("foo", Foo.class);
 
-		Assertions.assertTrue(beanFactory.isSingleton("foo"));
+		// act
+		var o1 = context.getBean("foo");
+		var o2 = context.getBean("foo");
 
-        var o1 = beanFactory.getBean("foo");
-        var o2 = beanFactory.getBean("foo");
-
+		// assert
+		Assertions.assertTrue(context.isSingleton("foo"));
 		Assertions.assertNotNull(o1);
 		Assertions.assertNotNull(o2);
-
 		Assertions.assertSame(o1, o2);
 	}
 
 	@Test
 	void testPrototypeScope() {
+		// arrange
 		context.registerPrototype("foo", Foo.class);
 
-		Assertions.assertTrue(beanFactory.isPrototype("foo"));
+		// act
+		var o1 = context.getBean("foo");
+		var o2 = context.getBean("foo");
 
-        var o1 = beanFactory.getBean("foo");
-        var o2 = beanFactory.getBean("foo");
-
+		// assert
+		Assertions.assertTrue(context.isPrototype("foo"));
 		Assertions.assertNotNull(o1);
 		Assertions.assertNotNull(o2);
-
 		Assertions.assertNotSame(o1, o2);
 	}
 }
